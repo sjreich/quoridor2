@@ -1,6 +1,10 @@
 class User < ApplicationRecord
-  # has_many :games
-  # figure out how to say that a user has many games under one of several aliases
+  def games
+    Game.where(player1: id)
+      .or(Game.where(player2: id))
+      .or(Game.where(player3: id))
+      .or(Game.where(player4: id))
+  end
 
   has_secure_password
 end
