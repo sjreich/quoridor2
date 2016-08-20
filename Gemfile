@@ -21,7 +21,7 @@ group :development, :test do
   gem 'rubocop'
   gem 'factory_girl_rails'
   gem 'rspec-its'
-  gem 'pry'
+  gem 'pry-rails'
 end
 
 group :development do
