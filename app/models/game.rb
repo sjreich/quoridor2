@@ -6,6 +6,18 @@ class Game < ApplicationRecord
 
   has_many :moves, -> { order('ordinal') }
 
+  def state
+    {
+      game_id: id,
+      current_player_number: current_player_number,
+      players: players.map(&:info),
+      walls: {
+        horizontal: horizontal_wall_coordinates,
+        vertical: vertical_wall_coordinates,
+      },
+    }
+  end
+
   def current_player_number
     moves.count % players.count + 1
   end

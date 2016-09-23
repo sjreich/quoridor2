@@ -6,6 +6,14 @@ class Player
     @moves = moves
   end
 
+  def info
+    {
+      number: number,
+      position: position,
+      walls_remaining: walls_remaining,
+    }
+  end
+
   def position
     translations.each_with_object(starting_position) do |move, position|
       position[:x] += move.x
