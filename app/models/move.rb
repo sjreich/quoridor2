@@ -6,19 +6,19 @@ class Move < ApplicationRecord
   validates :ordinal, uniqueness: { scope: :game }
 
   def wall?
-    [:horizontal_wall, :vertical_wall].include? variety.to_sym
+    %w(horizontal_wall vertical_wall).include? variety.to_s
   end
 
   def vertical_wall?
-    variety.to_sym == :vertical_wall
+    variety.to_s == 'vertical_wall'
   end
 
   def horizontal_wall?
-    variety.to_sym == :horizontal_wall
+    variety.to_s == 'horizontal_wall'
   end
 
   def translation?
-    variety.to_sym == :translation
+    variety.to_s == 'translation'
   end
 
   def to_coordinates
