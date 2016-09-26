@@ -31,7 +31,7 @@ class Game < ApplicationRecord
   end
 
   def players
-    (1..4).each_with_object([]) do |num, players|
+    @players ||= (1..4).each_with_object([]) do |num, players|
       next unless send("player#{num}".to_sym)
       players << Player.new(num, moves_for_player(num))
     end
