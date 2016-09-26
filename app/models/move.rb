@@ -1,9 +1,12 @@
+require_relative '../validators/translation_validator'
+
 class Move < ApplicationRecord
   belongs_to :game
   enum variety: { vertical_wall: 0, horizontal_wall: 1, translation: 2 }
 
   before_create :set_ordinal
   validates :ordinal, uniqueness: { scope: :game }
+  validates_with TranslationValidator, if: :translation?
 
   def wall?
     %w(horizontal_wall vertical_wall).include? variety.to_s
