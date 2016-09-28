@@ -12,8 +12,8 @@ class Game < ApplicationRecord
       current_player_number: current_player_number,
       players: players.map(&:info),
       walls: {
-        horizontal: horizontal_wall_coordinates,
-        vertical: vertical_wall_coordinates,
+        horizontal: horizontal_walls,
+        vertical: vertical_walls,
       },
     }
   end
@@ -22,11 +22,11 @@ class Game < ApplicationRecord
     moves.count % players.count + 1
   end
 
-  def horizontal_wall_coordinates
+  def horizontal_walls
     moves.select(&:horizontal_wall?).map(&:to_coordinates)
   end
 
-  def vertical_wall_coordinates
+  def vertical_walls
     moves.select(&:vertical_wall?).map(&:to_coordinates)
   end
 

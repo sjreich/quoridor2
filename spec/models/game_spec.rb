@@ -22,13 +22,13 @@ RSpec.describe Game, type: :model do
     end
 
     context 'horizontal walls' do
-      subject { game.horizontal_wall_coordinates }
+      subject { game.horizontal_walls }
       let(:variety) { :horizontal_wall }
       it { should eq expected_coordinates }
     end
 
     context 'vertical walls' do
-      subject { game.vertical_wall_coordinates }
+      subject { game.vertical_walls }
       let(:variety) { :vertical_wall }
       it { should eq expected_coordinates }
     end
