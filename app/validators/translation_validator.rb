@@ -2,9 +2,15 @@ class TranslationValidator < ActiveModel::Validator
   def validate(move)
     validate_stays_on_the_board(move)
     validate_does_not_cross_wall(move)
+    validate_does_not_land_on_opponent(move)
   end
 
   private
+
+  def validate_does_not_land_on_opponent(move)
+    return unless current_player_positions(move).include? position_after(move)
+    move.errors[:base] << 'This square is already occupied.'
+  end
 
   def validate_stays_on_the_board(move)
     return unless position_after(move).values.any? { |i| i < 1 || i > 9 }

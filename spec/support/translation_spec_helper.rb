@@ -13,6 +13,7 @@ DIRECTIONS = {
 }.freeze
 
 ERROR_TYPES = {
+  occupied: { base: ['This square is already occupied.'] },
   crosses_a_wall: { base: ['This move would cross through a wall.'] },
   out_of_bounds: { base: ['This move would place the piece off of the board.'] }
 }.freeze

@@ -8,6 +8,50 @@ describe 'TranslationValidator' do
   end
   subject { new_move.errors.messages }
 
+  describe 'a move cannot land in an occupied square' do
+    include_context('player location', player: 1, x: 5, y: 5)
+
+    context 'opponent is just left of player' do
+      include_context('player location', player: 2, x: 4, y: 5)
+      include_examples 'when going', [:left], :occupied
+    end
+
+    context 'opponent is just above player' do
+      include_context('player location', player: 2, x: 5, y: 4)
+      include_examples 'when going', [:up], :occupied
+    end
+
+    context 'opponent is just right of player' do
+      include_context('player location', player: 2, x: 6, y: 5)
+      include_examples 'when going', [:right], :occupied
+    end
+
+    context 'opponent is just below player' do
+      include_context('player location', player: 2, x: 5, y: 6)
+      include_examples 'when going', [:down], :occupied
+    end
+
+    context 'opponent is two spaces left of player' do
+      include_context('player location', player: 2, x: 3, y: 5)
+      include_examples 'when going', [:two_left], :occupied
+    end
+
+    context 'opponent is two spaces above player' do
+      include_context('player location', player: 2, x: 5, y: 3)
+      include_examples 'when going', [:two_up], :occupied
+    end
+
+    context 'opponent is two spaces right of player' do
+      include_context('player location', player: 2, x: 7, y: 5)
+      include_examples 'when going', [:two_right], :occupied
+    end
+
+    context 'opponent is two spaces below player' do
+      include_context('player location', player: 2, x: 5, y: 7)
+      include_examples 'when going', [:two_down], :occupied
+    end
+  end
+
   describe 'a move cannot leave the board' do
     context 'player is on the left edge' do
       include_context('player location', player: 1, x: 1, y: rand(1..9))
