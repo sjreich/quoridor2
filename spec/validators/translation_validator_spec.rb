@@ -3,13 +3,55 @@ require 'rails_helper'
 describe 'TranslationValidator' do
   let(:game) { create :game }
 
+  let(:new_move) do
+    game.moves.create(player: 1, variety: :translation, **move_direction)
+  end
+  subject { new_move.errors.messages }
+
+  describe 'a move cannot leave the board' do
+    context 'player is on the left edge' do
+      include_context('player location', player: 1, x: 1, y: rand(1..9))
+      include_examples 'when going', [:left, :two_left], :out_of_bounds
+    end
+
+    context 'player is on the top' do
+      include_context('player location', player: 1, x: rand(1..9), y: 1)
+      include_examples 'when going', [:up, :two_up], :out_of_bounds
+    end
+
+    context 'player is on the right edge' do
+      include_context('player location', player: 1, x: 9, y: rand(1..9))
+      include_examples 'when going', [:right, :two_right], :out_of_bounds
+    end
+
+    context 'player is on the bottom' do
+      include_context('player location', player: 1, x: rand(1..9), y: 9)
+      include_examples 'when going', [:down, :two_down], :out_of_bounds
+    end
+
+    context 'player is one away from the left edge' do
+      include_context('player location', player: 1, x: 2, y: rand(1..9))
+      include_examples 'when going', [:two_left], :out_of_bounds
+    end
+
+    context 'player is one away from the top' do
+      include_context('player location', player: 1, x: rand(1..9), y: 2)
+      include_examples 'when going', [:two_up], :out_of_bounds
+    end
+
+    context 'player is one away from the right edge' do
+      include_context('player location', player: 1, x: 8, y: rand(1..9))
+      include_examples 'when going', [:two_right], :out_of_bounds
+    end
+
+    context 'player is one away from the bottom' do
+      include_context('player location', player: 1, x: rand(1..9), y: 8)
+      include_examples 'when going', [:two_down], :out_of_bounds
+    end
+  end
+
   describe 'a translation cannot cross a wall' do
     include_context('player location', player: 1, x: 5, y: 5)
-
-    let(:new_move) do
-      game.moves.create(player: 1, variety: :translation, **move_direction)
-    end
-    subject { new_move.errors.messages }
 
     context 'vertical wall' do
       context 'wall is just on the left of the piece and up' do

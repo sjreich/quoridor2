@@ -14,6 +14,7 @@ DIRECTIONS = {
 
 ERROR_TYPES = {
   crosses_a_wall: { base: ['This move would cross through a wall.'] },
+  out_of_bounds: { base: ['This move would place the piece off of the board.'] }
 }.freeze
 
 shared_examples 'when going' do |illegal_dirs, error|

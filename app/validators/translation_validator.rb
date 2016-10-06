@@ -1,9 +1,15 @@
 class TranslationValidator < ActiveModel::Validator
   def validate(move)
+    validate_stays_on_the_board(move)
     validate_does_not_cross_wall(move)
   end
 
   private
+
+  def validate_stays_on_the_board(move)
+    return unless position_after(move).values.any? { |i| i < 1 || i > 9 }
+    move.errors[:base] << 'This move would place the piece off of the board.'
+  end
 
   def validate_does_not_cross_wall(move)
     return unless (actual_walls(move) & crossed_walls(move)).present?
@@ -14,12 +20,25 @@ class TranslationValidator < ActiveModel::Validator
     move.game.state[:players]
   end
 
+  def current_player_positions(move)
+    players(move).map do |player|
+      player[:position]
+    end
+  end
+
   def current_player_info(move)
     players(move).find { |player| player[:number] == move[:player] }
   end
 
   def position_before(move)
     current_player_info(move)[:position]
+  end
+
+  def position_after(move)
+    move_coords = move.slice(:x, :y).symbolize_keys
+    position_before(move).merge(move_coords) do |_x_or_y, position, change|
+      position + change
+    end
   end
 
   def actual_walls(move)
