@@ -1,11 +1,17 @@
 class TranslationValidator < ActiveModel::Validator
   def validate(move)
+    validate_not_wildly_illegal(move)
     validate_stays_on_the_board(move)
     validate_does_not_cross_wall(move)
     validate_does_not_land_on_opponent(move)
   end
 
   private
+
+  def validate_not_wildly_illegal(move)
+    one_space_or_jump?(move)
+    move.errors[:base] << 'No way.'
+  end
 
   def validate_does_not_land_on_opponent(move)
     return unless current_player_positions(move).include? position_after(move)
@@ -55,8 +61,8 @@ class TranslationValidator < ActiveModel::Validator
   def crossed_walls(move)
     position = position_before(move)
 
-    relative_xs = RELATIVE_LOCATIONS_CROSSED[move.x]
-    relative_ys = RELATIVE_LOCATIONS_CROSSED[move.y]
+    relative_xs = RELATIVE_LOCATIONS_CROSSED[move.x] || []
+    relative_ys = RELATIVE_LOCATIONS_CROSSED[move.y] || []
 
     rel_xy_combos = relative_xs.product(relative_ys)
 
@@ -66,6 +72,11 @@ class TranslationValidator < ActiveModel::Validator
         y: position[:y] + relative_y,
       }
     end
+  end
+
+  def one_space_or_jump?(move)
+    values = move.slice(:x, :y).symbolize_keys.values.map(&:abs).sort
+    [[1, 1], [0, 2]].include? values
   end
 
   RELATIVE_LOCATIONS_CROSSED = {

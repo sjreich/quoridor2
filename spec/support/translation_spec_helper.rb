@@ -13,6 +13,7 @@ DIRECTIONS = {
 }.freeze
 
 ERROR_TYPES = {
+  wildly_illegal: 'No way.',
   occupied: 'This square is already occupied.',
   crosses_a_wall: 'This move would cross through a wall.',
   out_of_bounds: 'This move would place the piece off of the board.',
