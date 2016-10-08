@@ -13,9 +13,9 @@ DIRECTIONS = {
 }.freeze
 
 ERROR_TYPES = {
-  occupied: { base: ['This square is already occupied.'] },
-  crosses_a_wall: { base: ['This move would cross through a wall.'] },
-  out_of_bounds: { base: ['This move would place the piece off of the board.'] }
+  occupied: 'This square is already occupied.',
+  crosses_a_wall: 'This move would cross through a wall.',
+  out_of_bounds: 'This move would place the piece off of the board.',
 }.freeze
 
 shared_examples 'when going' do |illegal_dirs, error|

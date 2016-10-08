@@ -6,7 +6,7 @@ describe 'TranslationValidator' do
   let(:new_move) do
     game.moves.create(player: 1, variety: :translation, **move_direction)
   end
-  subject { new_move.errors.messages }
+  subject { new_move.errors.messages[:base] }
 
   describe 'a move cannot land in an occupied square' do
     include_context('player location', player: 1, x: 5, y: 5)
