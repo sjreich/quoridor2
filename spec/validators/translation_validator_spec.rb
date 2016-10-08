@@ -181,4 +181,53 @@ describe 'TranslationValidator' do
       end
     end
   end
+
+  describe 'wildly illegal moves' do
+    include_context('player location', player: 1, x: 5, y: 5)
+
+    context 'nowhere' do
+      let(:move_direction) { { x: 0, y: 0 } }
+      it { should include ERROR_TYPES[:wildly_illegal] }
+    end
+
+    context 'three left' do
+      let(:move_direction) { { x: -3, y: 0 } }
+      it { should include ERROR_TYPES[:wildly_illegal] }
+    end
+
+    context 'three up' do
+      let(:move_direction) { { x: 0, y: -3 } }
+      it { should include ERROR_TYPES[:wildly_illegal] }
+    end
+
+    context 'three right' do
+      let(:move_direction) { { x: 3, y: 0 } }
+      it { should include ERROR_TYPES[:wildly_illegal] }
+    end
+
+    context 'three down' do
+      let(:move_direction) { { x: 0, y: 3 } }
+      it { should include ERROR_TYPES[:wildly_illegal] }
+    end
+
+    context 'two up, one left' do
+      let(:move_direction) { { x: -1, y: -2 } }
+      it { should include ERROR_TYPES[:wildly_illegal] }
+    end
+
+    context 'two down, one right' do
+      let(:move_direction) { { x: 1, y: 2 } }
+      it { should include ERROR_TYPES[:wildly_illegal] }
+    end
+
+    context 'two left, one down' do
+      let(:move_direction) { { x: -2, y: 1 } }
+      it { should include ERROR_TYPES[:wildly_illegal] }
+    end
+
+    context 'two right, one up' do
+      let(:move_direction) { { x: 2, y: -1 } }
+      it { should include ERROR_TYPES[:wildly_illegal] }
+    end
+  end
 end
