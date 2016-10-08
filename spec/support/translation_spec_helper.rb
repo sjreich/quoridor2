@@ -24,7 +24,7 @@ shared_examples 'when going' do |illegal_dirs, error|
 
     context "when moving #{dir}" do
       let(:move_direction) { deltas }
-      it { should eq ERROR_TYPES[error] }
+      it { should include ERROR_TYPES[error] }
     end
   end
 end
