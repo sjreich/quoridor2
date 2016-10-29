@@ -5,28 +5,29 @@ DIRECTIONS = {
   right:      { x:  1, y:  0 },
   up:         { x:  0, y: -1 },
   down:       { x:  0, y:  1 },
-
   two_left:   { x: -2, y:  0 },
   two_right:  { x:  2, y:  0 },
   two_up:     { x:  0, y: -2 },
   two_down:   { x:  0, y:  2 },
+  up_left:    { x: -1, y: -1 },
+  up_right:   { x:  1, y: -1 },
+  down_right: { x:  1, y:  1 },
+  down_left:  { x: -1, y:  1 },
 }.freeze
 
 ERROR_TYPES = {
-  wildly_illegal: 'No way.',
-  occupied: 'This square is already occupied.',
-  crosses_a_wall: 'This move would cross through a wall.',
-  out_of_bounds: 'This move would place the piece off of the board.',
+  wildly_illegal: ['No way.'],
+  occupied: ['This square is already occupied.'],
+  crosses_a_wall: ['This move would cross through a wall.'],
+  out_of_bounds: ['This move would place the piece off of the board.'],
+  illegal_jump: ['That jump is not legal.'],
+  no_error: [],
 }.freeze
 
-shared_examples 'when going' do |illegal_dirs, error|
-  DIRECTIONS.each do |dir, deltas|
-    next unless illegal_dirs.include? dir
-
-    context "when moving #{dir}" do
-      let(:move_direction) { deltas }
-      it { should include ERROR_TYPES[error] }
-    end
+shared_examples 'when going' do |dir, error|
+  context "when moving #{dir}" do
+    let(:move_direction) { DIRECTIONS[dir] }
+    it { should eq ERROR_TYPES[error] }
   end
 end
 
