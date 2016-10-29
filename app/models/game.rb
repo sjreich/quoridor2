@@ -23,11 +23,11 @@ class Game < ApplicationRecord
   end
 
   def horizontal_walls
-    moves.select(&:horizontal_wall?).map(&:to_coordinates)
+    moves.select(&:horizontal_wall?).map(&:to_coords)
   end
 
   def vertical_walls
-    moves.select(&:vertical_wall?).map(&:to_coordinates)
+    moves.select(&:vertical_wall?).map(&:to_coords)
   end
 
   def players

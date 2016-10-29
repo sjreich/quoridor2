@@ -24,11 +24,27 @@ class Move < ApplicationRecord
     variety.to_s == 'translation'
   end
 
-  def to_coordinates
+  def to_coords
     { x: x, y: y }
   end
 
+  def simple_translation?
+    translation? && absolute_coords == [0, 1]
+  end
+
+  def straight_jump?
+    translation? && absolute_coords == [0, 2]
+  end
+
+  def diagonal_jump?
+    translation? && absolute_coords == [1, 1]
+  end
+
   private
+
+  def absolute_coords
+    to_coords.values.map(&:abs).sort
+  end
 
   def set_ordinal
     return if ordinal.present?
