@@ -75,3 +75,13 @@ shared_context 'walls present at' do |walls|
     end
   end
 end
+
+shared_context 'basic setup for translation validation' do
+  let(:game) { create :game }
+
+  let(:new_move) do
+    game.moves.create(player: 1, variety: :translation, **move_direction)
+  end
+
+  subject { new_move.errors.messages[:base] }
+end
