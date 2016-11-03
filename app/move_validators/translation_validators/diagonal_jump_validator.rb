@@ -1,5 +1,3 @@
-require_relative 'helpers/translation_helpers'
-
 class DiagonalJumpValidator < AbstractMoveValidator
   include TranslationHelpers
 
@@ -14,7 +12,7 @@ class DiagonalJumpValidator < AbstractMoveValidator
 
   def horizontal_first_works?
     first_move_a = PseudoMove.new(x: move.x, y: 0, variety: :translation, player: move.player)
-    FirstPseudoMoveValidator.new(first_move_a, prior_game_state).validate
+    PseudoTranslationValidator.new(first_move_a, prior_game_state).validate
     intermediate_game_state = Marshal.load(Marshal.dump(prior_game_state))
     intermediate_game_state[:players].find { |p| p[:number] == move.player }[:position][:x] += first_move_a.x
     intermediate_game_state[:players].find { |p| p[:number] == move.player }[:position][:y] += first_move_a.y
@@ -30,7 +28,7 @@ class DiagonalJumpValidator < AbstractMoveValidator
 
   def vertical_first_works?
     first_move_b = PseudoMove.new(x: 0, y: move.y, variety: :translation, player: move.player)
-    FirstPseudoMoveValidator.new(first_move_b, prior_game_state).validate
+    PseudoTranslationValidator.new(first_move_b, prior_game_state).validate
     intermediate_game_state = Marshal.load(Marshal.dump(prior_game_state))
     intermediate_game_state[:players].find { |p| p[:number] == move.player }[:position][:x] += first_move_b.x
     intermediate_game_state[:players].find { |p| p[:number] == move.player }[:position][:y] += first_move_b.y

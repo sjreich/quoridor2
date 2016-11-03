@@ -1,4 +1,4 @@
-class FirstPseudoMoveValidator < AbstractMoveValidator
+class PseudoTranslationValidator < AbstractMoveValidator
   include TranslationHelpers
 
   def validate

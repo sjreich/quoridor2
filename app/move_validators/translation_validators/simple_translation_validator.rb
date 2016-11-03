@@ -1,5 +1,3 @@
-require_relative 'helpers/translation_helpers'
-
 class SimpleTranslationValidator < AbstractMoveValidator
   include TranslationHelpers
 
