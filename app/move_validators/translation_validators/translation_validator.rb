@@ -2,19 +2,15 @@ class TranslationValidator < AbstractMoveValidator
   def validate
     validate_not_wildly_illegal
     return unless move.errors[:base].empty?
-    next_validator.validate
+    next_validator.new(move, prior_game_state).validate
   end
 
   private
 
   def next_validator
-    if move.simple_translation?
-      SimpleTranslationValidator.new(move, prior_game_state)
-    elsif move.straight_jump?
-      StraightJumpValidator.new(move, prior_game_state)
-    elsif move.diagonal_jump?
-      DiagonalJumpValidator.new(move, prior_game_state)
-    end
+    return SimpleTranslationValidator if move.simple_translation?
+    return StraightJumpValidator if move.straight_jump?
+    return DiagonalJumpValidator if move.diagonal_jump?
   end
 
   def validate_not_wildly_illegal

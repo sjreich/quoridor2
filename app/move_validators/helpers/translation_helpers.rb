@@ -51,11 +51,22 @@ module TranslationHelpers
     end
   end
 
+  def pseudo_game_update(pseudo_move)
+    game_state = Marshal.load(Marshal.dump(prior_game_state))
+    game_state.tap do |game|
+      position = player_position(game, move.player)
+      position[:x] += pseudo_move.x
+      position[:y] += pseudo_move.y
+    end
+  end
+
+  def player_position(game_state, number)
+    game_state[:players].find { |p| p[:number] == number }[:position]
+  end
+
   RELATIVE_LOCATIONS_CROSSED = {
-    -2 => [0, -1],
     -1 => [0],
     0 => [0, -1],
     1 => [1],
-    2 => [1, 2],
   }.freeze
 end

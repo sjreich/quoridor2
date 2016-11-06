@@ -2,43 +2,47 @@ class DiagonalJumpValidator < AbstractMoveValidator
   include TranslationHelpers
 
   def validate
-    return if horizontal_first_works?
-    return if vertical_first_works?
+    return if diagonal_works?(:x, :y)
+    return if diagonal_works?(:y, :x)
 
     move.errors[:base] << 'That jump is not legal.'
   end
 
   private
 
-  def horizontal_first_works?
-    first_move_a = PseudoMove.new(x: move.x, y: 0, variety: :translation, player: move.player)
-    PseudoTranslationValidator.new(first_move_a, prior_game_state).validate
-    intermediate_game_state = Marshal.load(Marshal.dump(prior_game_state))
-    intermediate_game_state[:players].find { |p| p[:number] == move.player }[:position][:x] += first_move_a.x
-    intermediate_game_state[:players].find { |p| p[:number] == move.player }[:position][:y] += first_move_a.y
+  def diagonal_works?(first_dir, second_dir)
+    raise 'Illegal Directions' unless [:x, :y] == [first_dir, second_dir].sort
 
-    second_move_a1 = PseudoMove.new(x: move.x, y: 0, variety: :translation, player: move.player)
-    SimpleTranslationValidator.new(second_move_a1, intermediate_game_state).validate
+    move_onto_opponent = first_pseudo_move(first_dir)
+    return false unless move_onto_opponent.valid?
 
-    second_move_a2 = PseudoMove.new(x: 0, y: move.y, variety: :translation, player: move.player)
-    SimpleTranslationValidator.new(second_move_a2, intermediate_game_state).validate
+    intermediate_state = pseudo_game_update(move_onto_opponent)
 
-    first_move_a.valid? && !second_move_a1.valid? && second_move_a2.valid?
+    continue_straight = second_pseudo_move(first_dir, intermediate_state)
+    return false if continue_straight.valid?
+
+    turn_the_corner = second_pseudo_move(second_dir, intermediate_state)
+    turn_the_corner.valid?
   end
 
-  def vertical_first_works?
-    first_move_b = PseudoMove.new(x: 0, y: move.y, variety: :translation, player: move.player)
-    PseudoTranslationValidator.new(first_move_b, prior_game_state).validate
-    intermediate_game_state = Marshal.load(Marshal.dump(prior_game_state))
-    intermediate_game_state[:players].find { |p| p[:number] == move.player }[:position][:x] += first_move_b.x
-    intermediate_game_state[:players].find { |p| p[:number] == move.player }[:position][:y] += first_move_b.y
+  def first_pseudo_move(direction)
+    PseudoMove.new(pseudo_move_params(direction)).tap do |move|
+      PseudoTranslationValidator.new(move, prior_game_state).validate
+    end
+  end
 
-    second_move_b1 = PseudoMove.new(x: 0, y: move.y, variety: :translation, player: move.player)
-    SimpleTranslationValidator.new(second_move_b1, intermediate_game_state).validate
+  def second_pseudo_move(direction, intermediate_state)
+    PseudoMove.new(pseudo_move_params(direction)).tap do |move|
+      SimpleTranslationValidator.new(move, intermediate_state).validate
+    end
+  end
 
-    second_move_b2 = PseudoMove.new(x: move.x, y: 0, variety: :translation, player: move.player)
-    SimpleTranslationValidator.new(second_move_b2, intermediate_game_state).validate
-
-    first_move_b.valid? && !second_move_b1.valid? && second_move_b2.valid?
+  def pseudo_move_params(direction)
+    {
+      x: direction == :x ? move.x : 0,
+      y: direction == :y ? move.y : 0,
+      variety: :translation,
+      player: move.player,
+    }
   end
 end
