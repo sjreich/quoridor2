@@ -1,15 +1,12 @@
 class MoveValidator < AbstractMoveValidator
   def validate
-    next_validator.validate
+    next_validator.new(move, prior_game_state).validate
   end
 
   private
 
   def next_validator
-    if move.translation?
-      TranslationValidator.new(move, prior_game_state)
-    elsif move.wall?
-      WallValidator.new(move, prior_game_state)
-    end
+    return TranslationValidator if move.translation?
+    return WallValidator if move.wall?
   end
 end
