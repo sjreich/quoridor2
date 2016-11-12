@@ -21,6 +21,9 @@ ERROR_TYPES = {
   crosses_a_wall: ['This move would cross through a wall.'],
   out_of_bounds: ['This move would place the piece off of the board.'],
   illegal_jump: ['That jump is not legal.'],
+  overlapping_wall: ['That wall would overlap with another one.'],
+  crossing_wall: ['That wall would cross another one.'],
+  wall_out_of_bounds: ['That wall would extend off of the board.'],
   no_error: [],
 }.freeze
 
@@ -81,6 +84,16 @@ shared_context 'basic setup for translation validation' do
 
   let(:new_move) do
     game.moves.create(player: 1, variety: :translation, **move_direction)
+  end
+
+  subject { new_move.errors.messages[:base] }
+end
+
+shared_context 'basic setup for wall validation' do
+  let(:game) { create :game }
+
+  let(:new_move) do
+    game.moves.create(player: 1, variety: variety, **location)
   end
 
   subject { new_move.errors.messages[:base] }
