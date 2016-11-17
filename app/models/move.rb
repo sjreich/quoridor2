@@ -3,9 +3,13 @@ class Move < ApplicationRecord
   enum variety: { vertical_wall: 0, horizontal_wall: 1, translation: 2 }
 
   validates :variety, presence: true
-  before_save :validate_against_rules
   before_create :set_ordinal
   validates :ordinal, uniqueness: { scope: :game }
+
+  def save(options = {})
+    validate_against_rules unless options[:validate] == false
+    errors.empty? ? super : false
+  end
 
   def wall?
     %w(horizontal_wall vertical_wall).include? variety.to_s

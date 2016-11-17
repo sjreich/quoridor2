@@ -1,9 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Move, type: :model do
+  let(:game) { create :game }
+
   describe 'ordinal attribute auto-increments' do
     subject { create(:move, game: game).reload.ordinal }
-    let(:game) { create :game }
 
     context 'when this is the first move of the game' do
       it { should eq 1 }
@@ -22,12 +23,10 @@ RSpec.describe Move, type: :model do
   describe 'ordinal is unique within the game' do
     subject { new_move.save }
 
-    let(:new_move) { build :move, game: current_game, ordinal: new_ordinal }
-    let!(:current_game) { create :game }
-    let(:other_game) { create :game }
+    let(:new_move) { build :move, game: game, ordinal: new_ordinal }
 
     context 'when CURRENT game has a 23rd move' do
-      before { create :move, game: current_game, ordinal: 23 }
+      before { create :move, game: game, ordinal: 23 }
 
       context 'when new ordinal is 23' do
         let(:new_ordinal) { 23 }
@@ -41,12 +40,29 @@ RSpec.describe Move, type: :model do
     end
 
     context 'when DIFFERENT game has a 23rd move' do
+      let(:other_game) { create :game }
       before { create :move, game: other_game, ordinal: 23 }
 
       context 'when new ordinal is 23' do
         let(:new_ordinal) { 23 }
         it { should be true }
       end
+    end
+  end
+
+  describe '#save' do
+    context 'move fails custom validations' do
+      subject do
+        Move.new(
+          game: game,
+          player: 1,
+          variety: :translation,
+          x: 1000,
+          y: 1000
+        )
+      end
+
+      its(:save) { should be false }
     end
   end
 end
